@@ -21,7 +21,7 @@
       },
       {
           "src": "/(.*)",
-          "dest": "backend/wsgi.py"
+          "dest": "erp_luciano_martins/wsgi.py"
       }
     ]
 }
