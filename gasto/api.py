@@ -1,35 +1,39 @@
-from typing import List
 from http import HTTPStatus
-
-from ninja import Router
-from ninja_jwt.authentication import JWTAuth
 
 from django.shortcuts import get_object_or_404
 
-from .schemas import CardbankSchema, CardbankCreateSchema
+from ninja import Router
+
+from ninja_jwt.authentication import JWTAuth
+
+from gasto.models import Gasto
+
+from .schemas import GastoCreateSchema, GastoSchema
 
 router = Router(tags=['Gasto'])
 
 
-from gasto.models import Cardbank
+
+@router.get("gastos", response=list[GastoSchema])
+def list_gasto(request):
+    return Gasto.objects.all()
 
 
-@router.get("cardbanks", response=list[CardbankSchema], by_alias=True)
-def list_cardbank(request):
-    return Cardbank.objects.all()
-
-@router.get("cardbanks/{cardbank_id}", response=CardbankSchema, auth=JWTAuth())
-def get_cardbank(request, cardbank_id: int):
-    return get_object_or_404(Cardbank, id=cardbank_id)
+@router.get("gastos/{gasto_id}", response=GastoCreateSchema, auth=JWTAuth())
+def get_gasto(request, gasto_id: int):
+    return get_object_or_404(Gasto, id=gasto_id)
 
 
-@router.post('cardbanks', response={HTTPStatus.CREATED: CardbankSchema}, auth=JWTAuth())
-def create_cardbank(request, payload: CardbankCreateSchema):
-    return Cardbank.objects.create(**payload.dict())
+@router.post('gastos', response={HTTPStatus.CREATED: GastoSchema}, auth=JWTAuth())
+def create_gasto(request, gasto: GastoCreateSchema):
+    gasto_data = gasto.model_dump()
+    gasto_model = Gasto.objects.create(**gasto_data)
+    return gasto_model
 
-@router.patch("cardbanks/{cardbank_id}", response=CardbankSchema)
-def update_cardbank(request, cardbank_id: int, payload: CardbankCreateSchema):
-    instance = get_object_or_404(Cardbank, id=cardbank_id)
+
+@router.patch("gastos/{gasto_id}", response={HTTPStatus.OK: GastoSchema}, auth=JWTAuth())
+def update_gasto(request, gasto_id: int, payload: GastoCreateSchema):
+    instance = get_object_or_404(Gasto, id=gasto_id)
     data = payload.dict()
 
     for attr, value in data.items():
@@ -37,8 +41,9 @@ def update_cardbank(request, cardbank_id: int, payload: CardbankCreateSchema):
     instance.save()
     return instance
 
-@router.delete("cardbanks/{cardbank_id}", response={HTTPStatus.NO_CONTENT: None})
-def delete_cardbank(request, cardbank_id: int):
-    cardbank = get_object_or_404(Cardbank, id=cardbank_id)
-    cardbank.delete()
+
+@router.delete("gastos/{gasto_id}", response={HTTPStatus.NO_CONTENT: None}, auth=JWTAuth())
+def delete_cardbank(request, gasto_id: int):
+    instance = get_object_or_404(Gasto, id=gasto_id)
+    instance.delete()
     return HTTPStatus.NO_CONTENT, None
