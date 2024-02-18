@@ -13,14 +13,15 @@ api.add_router('', 'parcelas.api.router')
 """
 
 from ninja import NinjaAPI
-from ninja.security import django_auth
 
-from ..cardbank.views import router as base_router
-# from ..accounts.views import router as accounts_router
-# from ..core.views import router as core_router
+from cardbank.api import router as cardbank_router
+from segmento.api import router as segmento_router
+from gasto.api import router as gasto_router
+from parcelas.api import router as parcelas_router
 
 api = NinjaAPI(csrf=True)
 
-api.add_router("/", base_router, tags=["base"])
-# api.add_router("/accounts/", accounts_router, tags=["accounts"])
-# api.add_router("/core/", core_router, auth=django_auth, tags=["core"])
+api.add_router("", cardbank_router, tags=["cardbank"])
+api.add_router("", segmento_router, tags=["segmento"])
+api.add_router("", gasto_router, tags=["gasto"])
+api.add_router("", parcelas_router, tags=["parcelas"])
