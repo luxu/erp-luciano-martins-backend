@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import pytest
 
-URL = '/api/v1/gastos'
+URL = '/api/v1/parcelas'
 
 def authorization(client, user):
     client.force_login(user)
@@ -25,31 +25,42 @@ def get_token(client, user):
     return json.loads(response.content)
 
 @pytest.mark.django_db
-def test_list_gastos(client, user, gasto_data):
+def test_list_parcelas(client, user, parcela):
     response = client.get(
         URL,
         content_type='application/json'
     )
     assert response.status_code == HTTPStatus.OK
-@pytest.mark.django_db
-def test_create_gasto(client, user, gasto_data):
-    headers = authorization(client, user)
-    response = client.post(
-        URL,
-        gasto_data,
-        content_type='application/json',
-        headers=headers
-    )
-    expected = {'name': 'Nagai'}
-    assert response.status_code == HTTPStatus.CREATED
-    assert response.json()['name'] == expected['name']
+    assert len(response.json()) == 0
 
 @pytest.mark.django_db
-def test_update_gasto(client, user, gasto, gasto_data_update):
+def test_list_parcelas(client, user, parcelas_data):
+    response = client.get(
+        URL,
+        content_type='application/json'
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.json()) == 5
+    total = 0
+    for parcela in response.json():
+        total += float(parcela['valor_parcela'])
+    assert total == 50.00
+@pytest.mark.django_db
+def test_create_parcela(client, user, parcela_data):
+    # headers = authorization(client, user)
+    response = client.post(
+        URL,
+        parcela_data,
+        content_type='application/json'
+    )
+    assert response.status_code == HTTPStatus.OK
+
+@pytest.mark.django_db
+def test_update_parcela(client, user, parcela, parcela_data_update):
     headers = authorization(client, user)
     response = client.patch(
-        f'{URL}/{gasto.id}',
-        data=gasto_data_update,
+        f'{URL}/{parcela.id}',
+        data=parcela_data_update,
         content_type='application/json',
         headers=headers
     )
@@ -61,10 +72,10 @@ def test_update_gasto(client, user, gasto, gasto_data_update):
 
 
 @pytest.mark.django_db
-def test_delete_gasto(client, user, gasto):
+def test_delete_parcela(client, user, parcela):
     headers = authorization(client, user)
     response = client.delete(
-        f'{URL}/{gasto.id}',
+        f'{URL}/{parcela.id}',
         content_type='application/json',
         headers=headers
     )
