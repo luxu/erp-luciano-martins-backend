@@ -1,7 +1,7 @@
 from django.db import models
 
-from accounts.models import Base
-from accounts import constants
+from core.models import Base
+from core import constants
 
 class Segmento(Base):
     name = models.CharField("Tipo de comércio", max_length=100)
