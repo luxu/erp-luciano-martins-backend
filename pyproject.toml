@@ -15,6 +15,8 @@ dependencies = [
     "django-ninja-jwt>=5.3.9",
     "ruff>=0.14.0",
     "taskipy>=1.14.1",
+    "mysqlclient>=2.2.7",
+    "ipython>=9.6.0",
 ]
 [tool.taskipy.tasks]
 migrate = "uv run python manage.py migrate"
