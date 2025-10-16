@@ -19,7 +19,7 @@ from segmento.api import router as segmento_router
 from gasto.api import router as gasto_router
 from parcelas.api import router as parcelas_router
 
-api = NinjaAPI(csrf=True)
+api = NinjaAPI(csrf=False)
 
 api.add_router("", cardbank_router, tags=["cardbank"])
 api.add_router("", segmento_router, tags=["segmento"])

@@ -63,11 +63,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "erp_luciano_martins.wsgi.application"
 
-# default_db_url = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
-# DATABASES = {
-#     "default": config("DATABASE_URL", default=default_db_url, cast=db_url)
-# }
-
 if config("USAR_BD_INTEGRATOR", cast=bool):
     DATABASES = {
         "default": {

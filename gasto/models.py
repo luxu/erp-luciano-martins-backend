@@ -105,4 +105,4 @@ class Parcelas(models.Model):
         verbose_name_plural = "Parcelas dos gasto"
 
     def __str__(self):
-        return f"SEGMENTO..:{self.gasto.name} - PARCELA..:{self.parcelas}"
+        return f"Gasto..:{self.gasto.name} - PARCELA..:{self.parcelas}"
