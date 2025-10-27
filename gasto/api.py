@@ -1,38 +1,37 @@
 from http import HTTPStatus
 
 from django.shortcuts import get_object_or_404
-
 from ninja import Router
-
+from ninja.pagination import paginate, PageNumberPagination
 from ninja_jwt.authentication import JWTAuth
 
 from gasto.models import Gasto
-
-from .schemas import GastoCreateSchema, GastoSchema
+from .schemas import GastoSchema
 
 router = Router(tags=['Gasto'])
 
 
 
 @router.get("gastos", response=list[GastoSchema])
+@paginate(PageNumberPagination, page_size=10)
 def list_gasto(request):
     return Gasto.objects.all()
 
 
-@router.get("gastos/{gasto_id}", response=GastoCreateSchema, auth=JWTAuth())
+@router.get("gastos/{gasto_id}", response=GastoSchema, auth=JWTAuth())
 def get_gasto(request, gasto_id: int):
     return get_object_or_404(Gasto, id=gasto_id)
 
 
 @router.post('gastos', response={HTTPStatus.CREATED: GastoSchema}, auth=JWTAuth())
-def create_gasto(request, gasto: GastoCreateSchema):
+def create_gasto(request, gasto: GastoSchema):
     gasto_data = gasto.model_dump()
     gasto_model = Gasto.objects.create(**gasto_data)
     return gasto_model
 
 
 @router.patch("gastos/{gasto_id}", response={HTTPStatus.OK: GastoSchema}, auth=JWTAuth())
-def update_gasto(request, gasto_id: int, payload: GastoCreateSchema):
+def update_gasto(request, gasto_id: int, payload: GastoSchema):
     instance = get_object_or_404(Gasto, id=gasto_id)
     data = payload.dict()
 

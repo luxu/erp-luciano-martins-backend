@@ -3,6 +3,8 @@ from http import HTTPStatus
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
+from ninja.pagination import paginate, PageNumberPagination
+
 
 from gasto.models import Parcelas
 
@@ -14,6 +16,7 @@ from .schemas import ParcelasSchema
 
 
 @router.get("parcelas", response=list[ParcelasSchema])
+@paginate(PageNumberPagination, page_size=10)
 def list_parcelas(request):
     return Parcelas.objects.all()
 

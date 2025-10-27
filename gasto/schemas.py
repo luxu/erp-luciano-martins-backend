@@ -1,25 +1,16 @@
-from datetime import datetime
+from typing import Optional
 
-from ninja import ModelSchema, Schema
+from ninja import ModelSchema
 
-from gasto.models import Gasto, Segmento, Cardbank
-
-
-class SegmentoSchema(ModelSchema):
-    class Meta:
-        model = Segmento
-        fields = ['name']
-
-
-class CardbankSchema(ModelSchema):
-    class Meta:
-        model = Cardbank
-        fields = ['name']
+from cardbank.schemas import CardbankSchema
+from gasto.models import Gasto, Parcelas
+from segmento.schemas import SegmentoSchema
 
 
 class GastoSchema(ModelSchema):
     segmento: SegmentoSchema
     card_bank: CardbankSchema
+    description_on_invoice: Optional[str]
 
     class Meta:
         model = Gasto
@@ -34,12 +25,16 @@ class GastoSchema(ModelSchema):
             'card_bank'
         ]
 
+class ParcelaSchema(ModelSchema):
+    gasto: GastoSchema
 
-class GastoCreateSchema(Schema):
-    name: str
-    datagasto: datetime
-    total: str
-    description_on_invoice: str = None
-    opcoes_cartao: str
-    segmento_id: int
-    card_bank_id: int
+    class Meta:
+        model = Parcelas
+        fields = [
+            'id',
+            'gasto',
+            'parcelas',
+            'numero_parcela',
+            'valor_parcela',
+            'data_parcela',
+        ]

@@ -1,28 +1,15 @@
 import datetime
+from typing import Optional
 
 from ninja import ModelSchema, Schema
 
-from gasto.models import Parcelas
-from gasto.schemas import GastoSchema
+from gasto.models import Parcelas, Gasto
+# from gasto.schemas import GastoSchema
 
 
 class ParcelasSchema(ModelSchema):
-    gasto: GastoSchema
+    # gasto: Optional["GastoSchema"]
 
     class Meta:
         model = Parcelas
-        fields = [
-            'id',
-            'gasto',
-            'parcelas',
-            'numero_parcela',
-            'valor_parcela',
-            'data_parcela'
-        ]
-
-# class ParcelasCreateSchema(Schema):
-#     gasto_id: int
-#     parcelas: int
-#     numero_parcela: int
-#     valor_parcela: str
-#     data_parcela: datetime
+        fields = "__all__"
