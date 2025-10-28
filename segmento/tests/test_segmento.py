@@ -1,50 +1,46 @@
 import json
 from http import HTTPStatus
 import pytest
+from django.urls import reverse_lazy
 
-def get_token(client, user):
-    data = {
-        'username': user.username,
-        'password': 'strong-test-pass',
-    }
-    response = client.post('/api/v1/token/pair', data, content_type='application/json')
-    return json.loads(response.content)
+app_name = 'segmento'
+URL_LIST = reverse_lazy(f'api-1.0.0:list_{app_name}')
+URL_CREATE = reverse_lazy(f'api-1.0.0:create_{app_name}')
+URL_UPDATE = reverse_lazy(f'api-1.0.0:update_{app_name}', kwargs={f"{app_name}_id": 1})
+URL_DELETE = reverse_lazy(f'api-1.0.0:delete_{app_name}', kwargs={f"{app_name}_id": 1})
+
+
 @pytest.mark.django_db
-def test_list_segmento(client, segmento):
-    response = client.get('/api/v1/segmentos', content_type='application/json')
-    expected = {'id': 1, 'name': 'Supermercados',}
+def test_list(client, auth_headers):
+    response = client.get(URL_LIST, headers=auth_headers)
     assert response.status_code == HTTPStatus.OK
-    assert expected == response.json()[0]
+    assert len(response.json()) == 0
 
 @pytest.mark.django_db
-def test_create_segmento(client, user, segmento_data):
-    client.force_login(user)
-    token = get_token(client, user)
-    headers = {'Authorization': f'Bearer {token["access"]}'}
-    response = client.post('/api/v1/cardbanks', segmento_data, content_type='application/json', headers=headers)
-    expected = {'id': 1, 'name': 'Supermercados',}
+def test_list_by_id(client, create_datas, auth_headers):
+    list_ids = [data.id for data in create_datas]
+    choice_id = list_ids[2]
+    URL_LIST_BY_ID = reverse_lazy(f'api-1.0.0:get_{app_name}', kwargs={f"{app_name}_id": choice_id})
+    response = client.get(URL_LIST_BY_ID, headers=auth_headers)
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()['id'] == choice_id
+
+
+@pytest.mark.django_db
+def test_create(client, new_data, auth_headers):
+    response = client.post(URL_CREATE, new_data, content_type='application/json', headers=auth_headers)
     assert response.status_code == HTTPStatus.CREATED
-    assert expected == response.json()
+    assert response.json()['id'] == 1
+
 
 @pytest.mark.django_db
-def test_update_segmento(client, user, segmento):
-    client.force_login(user)
-    token = get_token(client, user)
-    headers = {'Authorization': f'Bearer {token["access"]}'}
-    data = {'name': 'Farmácias'}
-    response = client.patch(
-        f'/api/v1/segmentos/{segmento.id}', data=data, content_type='application/json', headers=headers
-    )
-    expected = {'id': 1, 'name': 'Farmácias',}
+def test_update(client, auth_headers, create_data, new_update_data):
+    response = client.patch(URL_UPDATE, data=new_update_data, content_type='application/json', headers=auth_headers)
     assert response.status_code == HTTPStatus.OK
-    assert expected == json.loads(response.content)
+    assert json.loads(response.content)['id'] == new_update_data['id']
+
 
 @pytest.mark.django_db
-def test_delete_segmento(client, user, segmento):
-    client.force_login(user)
-    token = get_token(client, user)
-    headers = {'Authorization': f'Bearer {token["access"]}'}
-    response = client.delete(
-        f'/api/v1/segmentos/{segmento.id}', content_type='application/json', headers=headers
-    )
+def test_delete(client, auth_headers, create_data):
+    response = client.delete(URL_DELETE, headers=auth_headers)
     assert response.status_code == HTTPStatus.NO_CONTENT

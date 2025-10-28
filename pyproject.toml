@@ -17,6 +17,11 @@ dependencies = [
     "taskipy>=1.14.1",
     "mysqlclient>=2.2.7",
     "ipython>=9.6.0",
+    "pandas>=2.3.3",
+    "scikit-learn>=1.7.2",
+    "pytest>=8.4.2",
+    "pytest-django>=4.11.1",
+    "faker>=37.12.0",
 ]
 [tool.taskipy.tasks]
 migrate = "uv run python manage.py migrate"
@@ -26,6 +31,7 @@ createsuperuser = 'uv run python manage.py createsuperuser --username="admin" --
 collectstatic = "uv run python manage.py collectstatic"
 shell_plus = "uv run python manage.py shell_plus"
 showmigrations = "uv run python manage.py showmigrations"
+show_urls = "uv run python manage.py show_urls"
 pytest = "uv run pytest -vv"
 lint = "ruff check"
 lint_fix = "ruff check --fix"

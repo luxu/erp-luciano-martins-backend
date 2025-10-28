@@ -6,12 +6,12 @@ from ninja_jwt.authentication import JWTAuth
 
 from .schemas import SegmentoSchema, SegmentoCreateSchema
 
-router = Router(tags=['Segmento'])
-
 from gasto.models import Segmento
 
+router = Router(tags=['Segmento'])
 
-@router.get("segmentos", response=list[SegmentoSchema], by_alias=True)
+
+@router.get("segmentos", response=list[SegmentoSchema], auth=JWTAuth())
 def list_segmento(request):
     return Segmento.objects.all()
 

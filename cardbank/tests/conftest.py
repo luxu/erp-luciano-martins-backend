@@ -1,25 +1,31 @@
 import pytest
+from faker import Faker
 
 from gasto.models import Cardbank
 
 
 @pytest.fixture
-def user_data():
+def new_data():
+    return {'name': 'BB-cartões'}
+
+@pytest.fixture
+def new_update_data():
     return {
-        'username': 'Lorem',
-        'password': 'strong-test-pass',
+        'id': 1,
+        'name': 'Citibank'
     }
 
 @pytest.fixture
-def cardbank_data():
-    return {
-        'name': 'BB-cartões',
-    }
+def create_datas(new_data):
+    faker = Faker()
+    faker.name()
+    for _ in range(5):
+        Cardbank.objects.create(name=faker.name())
+    cardbanks = Cardbank.objects.all()
+    return cardbanks
 
 @pytest.fixture
-def user(django_user_model, user_data):
-    return django_user_model.objects.create_user(**user_data)
+def create_data(new_data):
+    cardbank = Cardbank.objects.create(**new_data)
+    return cardbank
 
-@pytest.fixture
-def cardbank(cardbank_data):
-    return Cardbank.objects.create(**cardbank_data)

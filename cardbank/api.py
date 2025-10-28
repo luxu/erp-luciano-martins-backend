@@ -3,15 +3,16 @@ from http import HTTPStatus
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
+from ninja.pagination import paginate, PageNumberPagination
 
 from .schemas import CardbankSchema, CardbankCreateSchema
+from gasto.models import Cardbank
 
 router = Router(tags=['Cardbank'])
 
-from gasto.models import Cardbank
-
 
 @router.get("cardbanks", response=list[CardbankSchema], by_alias=True)
+@paginate(PageNumberPagination, page_size=10)
 def list_cardbank(request):
     return Cardbank.objects.all()
 
