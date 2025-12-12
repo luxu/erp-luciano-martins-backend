@@ -11,7 +11,7 @@ from gasto.models import Cardbank
 router = Router(tags=['Cardbank'])
 
 
-@router.get("cardbanks", response=list[CardbankSchema], by_alias=True)
+@router.get("cardbanks", response=list[CardbankSchema], auth=JWTAuth())
 @paginate(PageNumberPagination, page_size=10)
 def list_cardbank(request):
     return Cardbank.objects.all()
