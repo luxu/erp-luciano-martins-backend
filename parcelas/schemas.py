@@ -13,3 +13,16 @@ class ParcelasSchema(ModelSchema):
     class Meta:
         model = Parcelas
         fields = "__all__"
+
+class ParcelaSchema(ModelSchema):
+
+    class Meta:
+        model = Parcelas
+        fields = [
+            'id',
+            'gasto',
+            'parcelas',
+            'numero_parcela',
+            'valor_parcela',
+            'data_parcela',
+        ]

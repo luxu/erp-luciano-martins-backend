@@ -21,7 +21,7 @@ def get_segmento(request, segmento_id: int):
     return get_object_or_404(Segmento, id=segmento_id)
 
 
-@router.post('segmentos', response={HTTPStatus.CREATED: SegmentoSchema})
+@router.post('segmentos', response={HTTPStatus.CREATED: SegmentoSchema}, auth=JWTAuth())
 def create_segmento(request, payload: SegmentoCreateSchema):
     return Segmento.objects.create(**payload.dict())
 
