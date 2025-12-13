@@ -12,7 +12,7 @@ router = Router(tags=['Gasto'])
 
 
 
-@router.get("gastos", response=list[GastoSchema])
+@router.get("gastos", response=list[GastoSchema], auth=JWTAuth())
 @paginate(PageNumberPagination, page_size=10)
 def list_gasto(request):
     return Gasto.objects.all()
