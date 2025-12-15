@@ -31,7 +31,7 @@ def create_gasto(request, gasto: GastoIn):
 
 
 @router.patch("gastos/{gasto_id}", response={HTTPStatus.OK: GastoSchema}, auth=JWTAuth())
-def update_gasto(request, gasto_id: int, payload: GastoSchema):
+def update_gasto(request, gasto_id: int, payload: GastoIn):
     instance = get_object_or_404(Gasto, id=gasto_id)
     data = payload.dict()
 
