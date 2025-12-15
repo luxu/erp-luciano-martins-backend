@@ -34,6 +34,7 @@ def update_cardbank(request, cardbank_id: int, payload: CardbankCreateSchema):
 
     for attr, value in data.items():
         setattr(instance, attr, value)
+
     instance.save()
     return instance
 

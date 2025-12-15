@@ -6,7 +6,7 @@ from ninja.pagination import paginate, PageNumberPagination
 from ninja_jwt.authentication import JWTAuth
 
 from gasto.models import Gasto
-from .schemas import GastoSchema
+from .schemas import GastoSchema, GastoIn
 
 router = Router(tags=['Gasto'])
 
@@ -24,7 +24,7 @@ def get_gasto(request, gasto_id: int):
 
 
 @router.post('gastos', response={HTTPStatus.CREATED: GastoSchema}, auth=JWTAuth())
-def create_gasto(request, gasto: GastoSchema):
+def create_gasto(request, gasto: GastoIn):
     gasto_data = gasto.model_dump()
     gasto_model = Gasto.objects.create(**gasto_data)
     return gasto_model
