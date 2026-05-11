@@ -9,7 +9,7 @@ from gasto.models import Parcelas
 
 router = Router(tags=['Parcelas'])
 
-from .schemas import ParcelasSchema, ParcelaSchema
+from .schemas import ParcelasSchema, ParcelaSchema, ParcelasLoteCreateSchema
 
 
 @router.get("parcelas", response=list[ParcelasSchema], auth=JWTAuth())
@@ -22,9 +22,23 @@ def list_parcelas(request):
 def get_parcelas(request, parcela_id: int):
     return get_object_or_404(Parcelas, id=parcela_id)
 
-# @router.post('parcelas', response={HTTPStatus.CREATED: ParcelasSchema}) #, auth=JWTAuth())
-# def create_parcela(request, payload: ParcelasCreateSchema):
-#     return Parcelas.objects.create(**payload.dict())
+@router.post('parcelas/lote', auth=JWTAuth())
+def create_parcelas_lote(request, payload: ParcelasLoteCreateSchema):
+    itens = []
+
+    for item in payload.parcelas:
+        itens.append(
+            Parcelas(
+                gasto_id=item.gasto_id,
+                parcelas=item.parcelas,
+                numero_parcela=item.numero_parcela,
+                valor_parcela=item.valor_parcela,
+                data_parcela=item.data_parcela,
+            )
+        )
+
+    Parcelas.objects.bulk_create(itens)
+    return {'message': 'Parcelas criadas com sucesso'}
 
 
 # @router.patch("cardbanks/{cardbank_id}", response=SegmentoSchema, auth=JWTAuth())
