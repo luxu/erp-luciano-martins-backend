@@ -3,8 +3,6 @@ from http import HTTPStatus
 import pytest
 from django.urls import reverse_lazy
 
-from conftest import auth_headers
-
 app_name = 'cardbank'
 URL_LIST = reverse_lazy(f'api-1.0.0:list_{app_name}')
 URL_CREATE = reverse_lazy(f'api-1.0.0:create_{app_name}')
